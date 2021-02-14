@@ -4,8 +4,7 @@
   "description": "A simple utility to do fast longest prefix match in JS.",
   "main": "src/index.js",
   "scripts": {
-    "release": "dotenv release-it",
-    "test": "./node_modules/.bin/mocha --exit tests"
+    "release": "dotenv release-it"
   },
   "author": {
     "name": "Massimo Candela",
@@ -16,8 +15,6 @@
     "registry": "https://registry.npmjs.com/"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "brembo": "^2.0.4",
     "ip-sub": "^1.0.19",
     "radix-trie-js": "^1.0.5"
   },
