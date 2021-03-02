@@ -15,7 +15,7 @@
     "registry": "https://registry.npmjs.com/"
   },
   "dependencies": {
-    "ip-sub": "^1.0.19",
+    "ip-sub": "^1.0.20",
     "radix-trie-js": "^1.0.5"
   },
   "devDependencies": {
