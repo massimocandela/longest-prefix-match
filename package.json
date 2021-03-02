@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "dotenv-cli": "^4.0.0",
-    "release-it": "^14.3.0"
+    "release-it": "^14.4.1"
   },
   "repository": {
     "type": "git",
