@@ -24,8 +24,13 @@ longestPrefixMatch.addPrefix("213.74.5.0/24", { match: "213.74.5.0/24", somethin
 longestPrefixMatch.addPrefix("213.74.5.0/26", { match: "213.74.5.0/26", something: true });
 
 // You can retrive the data object associated with the longest-prefix-match prefix
-longestPrefixMatch.getMatch("213.74.5.60/32"); // returns { match: "213.74.5.0/26", something: true }
-longestPrefixMatch.getMatch("213.74.5.70/32"); // returns { match: "213.74.5.0/24", something: false }
-longestPrefixMatch.getMatch("213.74.5.0/28"); // returns { match: "213.74.5.0/26", something: true }
+longestPrefixMatch.getMatch("213.74.5.60/32"); // returns [{ match: "213.74.5.0/26", something: true }]
+longestPrefixMatch.getMatch("213.74.5.70/32"); // returns [{ match: "213.74.5.0/24", something: false }]
+longestPrefixMatch.getMatch("213.74.5.0/28"); // returns [{ match: "213.74.5.0/26", something: true }]
+
+// You can retrieve all the containing prefixes as well
+longestPrefixMatch.getMatch("213.74.5.0/28", true); // returns [{ match: "213.74.5.0/26", something: true }, { match: "213.74.5.0/24", something: false }]
+
+longestPrefixMatch.getMatch("213.74.5.0/25", true); // returns [{ match: "213.74.5.0/24", something: false }]
 
 ```
