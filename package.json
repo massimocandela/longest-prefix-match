@@ -75,7 +75,7 @@
     },
     "npm": {
       "publish": true,
-      "publishPath": "src"
+      "publishPath": "."
     },
     "github": {
       "release": true,
