@@ -13,6 +13,7 @@
   },
   "license": "BSD-3-Clause",
   "publishConfig": {
+    "cache": "~/.npm",
     "registry": "https://registry.npmjs.com/"
   },
   "dependencies": {
@@ -24,7 +25,7 @@
     "chai-subset": "^1.6.0",
     "dotenv-cli": "^4.0.0",
     "mocha": "^8.3.1",
-    "release-it": "14.4.1"
+    "release-it": "^14.4.1"
   },
   "repository": {
     "type": "git",
