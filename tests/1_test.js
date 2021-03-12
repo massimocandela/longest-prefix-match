@@ -11,6 +11,9 @@ const somePrefixes = [
     "77.160.0.0/16",
     "143.0.0.0/21",
     "143.0.0.0/24",
+    "160.0.0.0/6",
+    "160.0.0.0/8",
+    "160.0.0.0/24",
     "2001:0db8:85a3:0000:0000:8a2e:0370:7334/64",
     "2001:0db8:85a3:0000:0000:8a2e:0370:7334/48"
 ]
@@ -19,6 +22,7 @@ describe("Tests", function () {
     const longestPrefixMatch = new LongestPrefixMatch();
 
     somePrefixes.forEach(prefix => longestPrefixMatch.addPrefix(prefix, { prefix }));
+
 
     it("match - v4", function(done) {
 
@@ -39,6 +43,17 @@ describe("Tests", function () {
 
         const match5 = longestPrefixMatch.getMatch("143.0.0.0/21", true).map(i => i.prefix).join("-");
         expect(match5).to.equal( '143.0.0.0/21');
+
+        const match6 = longestPrefixMatch.getMatch("160.0.0.0/9", false).map(i => i.prefix).join("-");
+        expect(match6).to.equal( '160.0.0.0/8');
+
+        const match7 = longestPrefixMatch.getMatch("160.0.0.0/25", false).map(i => i.prefix).join("-");
+        expect(match7).to.equal( '160.0.0.0/24');
+
+        const match8 = longestPrefixMatch.getMatch("160.0.0.0/25", true).map(i => i.prefix).join("-");
+        expect(match8).to.equal( '160.0.0.0/6-160.0.0.0/8-160.0.0.0/24');
+
+
 
         done();
     })
@@ -68,8 +83,11 @@ describe("Tests", function () {
 
     it("no match - v4", function(done) {
         const match = longestPrefixMatch.getMatch("143.0.0.0/20").map(i => i.prefix).join("-");
-
         expect(match).to.equal('');
+
+        const match9 = longestPrefixMatch.getMatch("160.0.0.0/1", true).map(i => i.prefix).join("-");
+        expect(match9).to.equal( '');
+
         done();
     })
         .timeout(asyncTimeout);
