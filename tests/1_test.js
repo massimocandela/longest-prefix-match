@@ -100,4 +100,11 @@ describe("Tests", function () {
     })
         .timeout(asyncTimeout);
 
+
+    it("Export to array", function(done) {
+        const arr = longestPrefixMatch.toArray();
+        expect(arr.length > 0).to.equal(true);
+        expect(somePrefixes.every(i => arr.map(i => i.prefix).includes(i))).to.equal(true);
+        done();
+    }).timeout(asyncTimeout);
 });

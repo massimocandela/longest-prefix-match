@@ -53,11 +53,11 @@ const LongestPrefixMatch = function () {
         }
     };
 
-    this.addPrefix = (prefix, data) => {
+    this.addPrefix = (prefix, payload) => {
         const af = ip.getAddressFamily(prefix);
         const binaryPrefix = ip.getNetmask(prefix, af);
 
-        return this._addPrefix(binaryPrefix, af, { prefix, data });
+        return this._addPrefix(binaryPrefix, af, payload);
     };
 
     this.getData = () => {
@@ -65,12 +65,15 @@ const LongestPrefixMatch = function () {
     };
 
     this.toArray = () => {
-        return [].concat.apply([],[...this.data.v4s, ...this.data.v4.values(), ...this.data.v6s, ...this.data.v6.values()]);
+        return [].concat.apply([],[...this.data.v4s, ...this.data.v4.values(), ...this.data.v6s, ...this.data.v6.values()]).map(i => i.data);
     };
 
-    this._addPrefix = (binaryPrefix, af, data) => {
-        data.binaryPrefix = binaryPrefix;
-        data.length = binaryPrefix.length;
+    this._addPrefix = (binaryPrefix, af, payload) => {
+        const data = {
+            data: payload,
+            binaryPrefix,
+            length: binaryPrefix.length
+        }
 
         if (af === 4) {
             if (binaryPrefix.length < this.keySizes.v4) {
