@@ -3,7 +3,7 @@ const RadixTrie = require("radix-trie-js");
 
 const LongestPrefixMatch = function (params={}) {
     this.keySizes = params.keySizes || {
-        v4: 9,
+        v4: 12,
         v6: 24
     };
 
