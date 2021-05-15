@@ -1,9 +1,9 @@
 const ip = require("ip-sub");
 const RadixTrie = require("radix-trie-js");
 
-const LongestPrefixMatch = function () {
-    this.keySizes = {
-        v4: 12,
+const LongestPrefixMatch = function (params={}) {
+    this.keySizes = params.keySizes || {
+        v4: 9,
         v6: 24
     };
 
