@@ -5,6 +5,8 @@ It is optimized for performance, e.g., it takes into consideration the current (
 
 It works in the browser and in Node.js, it allows lookups in less than 0.05ms per prefix.
 
+The data structure it's based on a concatenation of hashmaps and radix tries working on the binary representation of the prefixes. Arrays are used to manage duplicate data entries. It is optimized for read operations, at the expense of write operations and memory usage.
+
 
 ## Install
 Run: 
