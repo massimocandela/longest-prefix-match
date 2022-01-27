@@ -110,6 +110,8 @@ describe("Tests", function () {
 
     it("length", function(done) {
         expect(longestPrefixMatch.length).to.equal(10);
+        longestPrefixMatch.reset();
+        expect(longestPrefixMatch.length).to.equal(0);
         done();
     })
 });
