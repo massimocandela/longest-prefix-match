@@ -2,6 +2,7 @@ const ip = require("ip-sub");
 const RadixTrie = require("radix-trie-js");
 
 const LongestPrefixMatch = function (params={}) {
+    this.length = 0;
     this.keySizes = params.keySizes || {
         v4: 12,
         v6: 24
@@ -69,6 +70,7 @@ const LongestPrefixMatch = function (params={}) {
     };
 
     this._addPrefix = (binaryPrefix, af, payload) => {
+        this.length++;
         const data = {
             data: payload,
             binaryPrefix,
