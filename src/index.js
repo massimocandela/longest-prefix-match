@@ -9,6 +9,7 @@ const LongestPrefixMatch = function (params={}) {
     };
 
     this.reset = () => {
+        this.length = 0;
         this.data = {
             v4: new RadixTrie(),
             v6: new RadixTrie(),
