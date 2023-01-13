@@ -13,8 +13,8 @@ const LongestPrefixMatch = function (params={}) {
         this.data = {
             v4: new RadixTrie(),
             v6: new RadixTrie(),
-            v4s: [],
-            v6s: []
+            v4s: {},
+            v6s: {}
         };
     };
 
@@ -23,13 +23,19 @@ const LongestPrefixMatch = function (params={}) {
             if (binaryNetmask.length < this.keySizes.v4) {
                 return this.data.v4s;
             } else {
-                return this.data.v4s.concat(this.data.v4.get(binaryNetmask.slice(0, this.keySizes.v4)) || []);
+                return {
+                    ...this.data.v4s,
+                    ...this.data.v4.get(binaryNetmask.slice(0, this.keySizes.v4)) ?? {}
+                };
             }
         } else {
             if (binaryNetmask.length < this.keySizes.v6) {
                 return this.data.v6s;
             } else {
-                return this.data.v6s.concat(this.data.v6.get(binaryNetmask.slice(0, this.keySizes.v6)) || []);
+                return {
+                    ...this.data.v6s,
+                    ...this.data.v6.get(binaryNetmask.slice(0, this.keySizes.v6)) ?? {}
+                };
             }
         }
     }
@@ -44,14 +50,19 @@ const LongestPrefixMatch = function (params={}) {
     this._getMatch = (binaryNetmask, af, all) => {
         const matches = this._get(binaryNetmask, af);
 
-        const filtered = matches.filter(match => match.binaryPrefix === binaryNetmask ||
-            ip.isSubnetBinary(match.binaryPrefix, binaryNetmask));
+        const filtered = {};
+        for (let match of Object.values(matches).flat()) {
+            if (match.binaryPrefix === binaryNetmask || ip.isSubnetBinary(match.binaryPrefix, binaryNetmask)) {
+                filtered[match.length] = filtered[match.length] || [];
+                filtered[match.length].push(match);
+            }
+        }
 
         if (all) {
-            return filtered.map(i => i.data);
+            return Object.values(filtered).flat().map(i => i.data);
         } else {
-            const maxBits = (filtered[filtered.length - 1] || []).length;
-            return filtered.filter(i => i.length === maxBits).map(i => i.data);
+            const maxBits = Math.max(...Object.keys(filtered)).toString();
+            return (filtered[maxBits] || []).map(i => i.data);
         }
     };
 
@@ -67,7 +78,14 @@ const LongestPrefixMatch = function (params={}) {
     };
 
     this.toArray = () => {
-        return [].concat.apply([],[...this.data.v4s, ...this.data.v4.values(), ...this.data.v6s, ...this.data.v6.values()]).map(i => i.data);
+        return [
+            ...Object.values(this.data.v4s),
+            ...[...this.data.v4.values()].map(i => Object.values(i).flat()).flat(),
+            ...Object.values(this.data.v6s),
+            ...[...this.data.v6.values()].map(i => Object.values(i).flat()).flat()
+        ]
+            .flat()
+            .map(i => i.data);
     };
 
     this._addPrefix = (binaryPrefix, af, payload) => {
@@ -80,27 +98,30 @@ const LongestPrefixMatch = function (params={}) {
 
         if (af === 4) {
             if (binaryPrefix.length < this.keySizes.v4) {
-                this.data.v4s.push(data);
-                this.data.v4s.sort((a, b) => a.length - b.length)
+                this.data.v4s[data.length] = this.data.v4s[data.length] || [];
+                this.data.v4s[data.length].push(data);
+                // this.data.v4s.sort((a, b) => a.length - b.length)
             } else {
                 const key = binaryPrefix.slice(0, this.keySizes.v4);
                 if (!this.data.v4.has(key)) {
-                    this.data.v4.add(key, []);
+                    this.data.v4.add(key, {});
                 }
-                this.data.v4.get(key).push(data);
-                this.data.v4.get(key).sort((a, b) => a.length - b.length);
+                const dict = this.data.v4.get(key);
+                dict[data.length] = dict[data.length] || [];
+                dict[data.length].push(data);
             }
         } else {
             if (binaryPrefix.length < this.keySizes.v6) {
-                this.data.v6s.push(data);
-                this.data.v6s.sort((a, b) => a.length - b.length)
+                this.data.v6s[data.length] = this.data.v6s[data.length] || [];
+                this.data.v6s[data.length].push(data);
             } else {
                 const key = binaryPrefix.slice(0, this.keySizes.v6);
                 if (!this.data.v6.has(key)) {
-                    this.data.v6.add(key, []);
+                    this.data.v6.add(key, {});
                 }
-                this.data.v6.get(key).push(data);
-                this.data.v6.get(key).sort((a, b) => a.length - b.length);
+                const dict = this.data.v6.get(key);
+                dict[data.length] = dict[data.length] || [];
+                dict[data.length].push(data);
             }
         }
     };
@@ -109,8 +130,3 @@ const LongestPrefixMatch = function (params={}) {
 };
 
 module.exports = LongestPrefixMatch;
-
-
-
-
-
