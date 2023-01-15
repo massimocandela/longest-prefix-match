@@ -13,57 +13,38 @@ const LongestPrefixMatch = function (params={}) {
         this.data = {
             v4: new RadixTrie(),
             v6: new RadixTrie(),
-            v4s: {},
-            v6s: {}
+            v4s: [],
+            v6s: []
         };
     };
-
-    this._get = (binaryNetmask, af) => {
-        if (af === 4) {
-            if (binaryNetmask.length < this.keySizes.v4) {
-                return this.data.v4s;
-            } else {
-                return {
-                    ...this.data.v4s,
-                    ...this.data.v4.get(binaryNetmask.slice(0, this.keySizes.v4)) ?? {}
-                };
-            }
-        } else {
-            if (binaryNetmask.length < this.keySizes.v6) {
-                return this.data.v6s;
-            } else {
-                return {
-                    ...this.data.v6s,
-                    ...this.data.v6.get(binaryNetmask.slice(0, this.keySizes.v6)) ?? {}
-                };
-            }
-        }
-    }
 
     this.getMatch = (prefix, all) => {
         const af = ip.getAddressFamily(prefix);
         const binaryNetmask = ip.getNetmask(prefix, af);
 
-        return this._getMatch(binaryNetmask, af, all);
+        return this._getMatch(binaryNetmask, af, all).map(i => i.data);
     };
 
     this._getMatch = (binaryNetmask, af, all) => {
-        const matches = this._get(binaryNetmask, af);
 
-        const filtered = {};
-        for (let match of Object.values(matches).flat()) {
-            if (match.binaryPrefix === binaryNetmask || ip.isSubnetBinary(match.binaryPrefix, binaryNetmask)) {
-                filtered[match.length] = filtered[match.length] || [];
-                filtered[match.length].push(match);
+        const afKey = `v${af}`;
+        let key = binaryNetmask;
+        let results = [];
+
+        for (let n=key.length; n > 0; n--) {
+            key = binaryNetmask.slice(0, n);
+            const result = this.data[afKey].get(key);
+
+            if (result) {
+                results = results.concat(result);
+
+                if (!all) {
+                    return results;
+                }
             }
         }
 
-        if (all) {
-            return Object.values(filtered).flat().map(i => i.data);
-        } else {
-            const maxBits = Math.max(...Object.keys(filtered)).toString();
-            return (filtered[maxBits] || []).map(i => i.data);
-        }
+        return results;
     };
 
     this.addPrefix = (prefix, payload) => {
@@ -78,14 +59,7 @@ const LongestPrefixMatch = function (params={}) {
     };
 
     this.toArray = () => {
-        return [
-            ...Object.values(this.data.v4s),
-            ...[...this.data.v4.values()].map(i => Object.values(i).flat()).flat(),
-            ...Object.values(this.data.v6s),
-            ...[...this.data.v6.values()].map(i => Object.values(i).flat()).flat()
-        ]
-            .flat()
-            .map(i => i.data);
+        return [].concat.apply([],[...this.data.v4s, ...this.data.v4.values(), ...this.data.v6s, ...this.data.v6.values()]).map(i => i.data);
     };
 
     this._addPrefix = (binaryPrefix, af, payload) => {
@@ -96,34 +70,12 @@ const LongestPrefixMatch = function (params={}) {
             length: binaryPrefix.length
         }
 
-        if (af === 4) {
-            if (binaryPrefix.length < this.keySizes.v4) {
-                this.data.v4s[data.length] = this.data.v4s[data.length] || [];
-                this.data.v4s[data.length].push(data);
-                // this.data.v4s.sort((a, b) => a.length - b.length)
-            } else {
-                const key = binaryPrefix.slice(0, this.keySizes.v4);
-                if (!this.data.v4.has(key)) {
-                    this.data.v4.add(key, {});
-                }
-                const dict = this.data.v4.get(key);
-                dict[data.length] = dict[data.length] || [];
-                dict[data.length].push(data);
-            }
-        } else {
-            if (binaryPrefix.length < this.keySizes.v6) {
-                this.data.v6s[data.length] = this.data.v6s[data.length] || [];
-                this.data.v6s[data.length].push(data);
-            } else {
-                const key = binaryPrefix.slice(0, this.keySizes.v6);
-                if (!this.data.v6.has(key)) {
-                    this.data.v6.add(key, {});
-                }
-                const dict = this.data.v6.get(key);
-                dict[data.length] = dict[data.length] || [];
-                dict[data.length].push(data);
-            }
+        const afKey = `v${af}`;
+        const key = binaryPrefix;
+        if (!this.data[afKey].has(key)) {
+            this.data[afKey].add(key, []);
         }
+        this.data[afKey].get(key).push(data);
     };
 
     this.reset();
