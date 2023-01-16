@@ -59,7 +59,7 @@ const LongestPrefixMatch = function (params={}) {
     };
 
     this.toArray = () => {
-        return [].concat.apply([],[...this.data.v4s, ...this.data.v4.values(), ...this.data.v6s, ...this.data.v6.values()]).map(i => i.data);
+        return [...this.data.v4.values(), ...this.data.v6.values()].flat().map(i => i.data);
     };
 
     this._addPrefix = (binaryPrefix, af, payload) => {
