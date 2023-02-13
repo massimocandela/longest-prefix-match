@@ -17,13 +17,13 @@
     "registry": "https://registry.npmjs.com/"
   },
   "dependencies": {
-    "ip-sub": "^1.3.5",
+    "ip-sub": "^1.3.6",
     "radix-trie-js": "^1.0.6"
   },
   "devDependencies": {
     "chai": "^4.3.7",
     "chai-subset": "^1.6.0",
-    "dotenv-cli": "^6.0.0",
+    "dotenv-cli": "^7.0.0",
     "mocha": "^10.2.0",
     "release-it": "^15.6.0"
   },
