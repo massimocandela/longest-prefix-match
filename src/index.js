@@ -33,7 +33,7 @@ const LongestPrefixMatch = function (params={}) {
 
         for (let n=1; n <= binaryNetmask.length; n++) {
             key = binaryNetmask.slice(0, n);
-            const result = this.data[afKey].get(key);
+            const result = this.data[afKey].at(key);
 
             if (result) {
                 return result;

@@ -103,6 +103,18 @@ describe("Tests", function () {
     })
         .timeout(asyncTimeout);
 
+    it("less specific", function(done) {
+        const match1 = sortByPrefixLength(longestPrefixMatch.getLessSpecificMatch("160.0.0.0/24").map(i => i.prefix)).join("-");
+        const match2 = sortByPrefixLength(longestPrefixMatch.getLessSpecificMatch("2001:0db8:85a3:0000:0000:8a2e:0370:7334/64").map(i => i.prefix)).join("-");
+        const match3 = sortByPrefixLength(longestPrefixMatch.getLessSpecificMatch("2001:0db8:85a3:0000:0000:8a2e:0370:7334/48").map(i => i.prefix)).join("-");
+
+        expect(match1).to.equal('160.0.0.0/6');
+        expect(match2).to.equal("2001:0db8:85a3:0000:0000:8a2e:0370:7334/48");
+        expect(match3).to.equal("2001:0db8:85a3:0000:0000:8a2e:0370:7334/48");
+        done();
+    })
+        .timeout(asyncTimeout);
+
 
     it("export to array", function(done) {
         const arr = longestPrefixMatch.toArray();

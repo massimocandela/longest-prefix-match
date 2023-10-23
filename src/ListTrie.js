@@ -32,6 +32,10 @@ const ListTrie = function () {
         return results;
     }
 
+    this.at = (key) => {
+        return this.index[key];
+    }
+
     this.values = () => {
         return Object.values(this.index);
     }
