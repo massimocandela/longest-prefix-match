@@ -2,6 +2,9 @@ const ListTrie = function () {
     this.index = {};
 
     this.reset = () => {
+        for (let k in this.index) {
+            delete this.index[k];
+        }
         this.index = {};
     }
 
