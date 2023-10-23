@@ -1,20 +1,14 @@
 const ip = require("ip-sub");
-const RadixTrie = require("radix-trie-js");
+const ListTrie = require('./ListTrie');
 
 const LongestPrefixMatch = function (params={}) {
     this.length = 0;
-    this.keySizes = params.keySizes || {
-        v4: 12,
-        v6: 24
-    };
 
     this.reset = () => {
         this.length = 0;
         this.data = {
-            v4: new RadixTrie(),
-            v6: new RadixTrie(),
-            v4s: [],
-            v6s: []
+            v4: new ListTrie(),
+            v6: new ListTrie()
         };
     };
 
@@ -25,58 +19,44 @@ const LongestPrefixMatch = function (params={}) {
         return this._getMatch(binaryNetmask, af, all).map(i => i.data);
     };
 
-    this.getLessSpecificMatch = (prefix) => {
-        const af = ip.getAddressFamily(prefix);
-        const binaryNetmask = ip.getNetmask(prefix, af);
+    // this.getLessSpecificMatch = (prefix) => {
+    //     const af = ip.getAddressFamily(prefix);
+    //     const binaryNetmask = ip.getNetmask(prefix, af);
+    //
+    //     return this._getLessSpecificMatch(binaryNetmask, af).map(i => i.data);
+    // };
 
-        return this._getLessSpecificMatch(binaryNetmask, af).map(i => i.data);
-    };
-
-    this._getLessSpecificMatch = (binaryNetmask, af) => {
-
-        const afKey = `v${af}`;
-        let key = binaryNetmask;
-        let results = [];
-
-        for (let n=1; n <= binaryNetmask.length; n++) {
-            key = binaryNetmask.slice(0, n);
-            const result = this.data[afKey].get(key);
-
-            if (result) {
-                results = results.concat(result);
-
-                return results;
-            }
-        }
-
-        return [];
-    };
+    // this._getLessSpecificMatch = (binaryNetmask, af) => {
+    //
+    //     const afKey = `v${af}`;
+    //     let key = binaryNetmask;
+    //     let results = [];
+    //
+    //     for (let n=1; n <= binaryNetmask.length; n++) {
+    //         key = binaryNetmask.slice(0, n);
+    //         const result = this.data[afKey].get(key);
+    //
+    //         if (result) {
+    //             results = results.concat(result);
+    //
+    //             return results;
+    //         }
+    //     }
+    //
+    //     return [];
+    // };
 
     this._getMatch = (binaryNetmask, af, all) => {
 
         const afKey = `v${af}`;
         let key = binaryNetmask;
-        let results = [];
 
-        for (let n=key.length; n > 0; n--) {
-            key = binaryNetmask.slice(0, n);
-            const result = this.data[afKey].get(key);
-
-            if (result) {
-                results = results.concat(result);
-
-                if (!all) {
-                    return results;
-                }
-            }
-        }
-
-        return results;
+        return this.data[afKey].get(key, all);
     };
 
     this.addPrefix = (prefix, payload) => {
         const af = ip.getAddressFamily(prefix);
-        const binaryPrefix = ip.getNetmask(prefix, af);
+        const binaryPrefix = ip.applyNetmask(prefix, af);
 
         return this._addPrefix(binaryPrefix, af, payload);
     };
@@ -99,10 +79,8 @@ const LongestPrefixMatch = function (params={}) {
 
         const afKey = `v${af}`;
         const key = binaryPrefix;
-        if (!this.data[afKey].has(key)) {
-            this.data[afKey].add(key, []);
-        }
-        this.data[afKey].get(key).push(data);
+
+        this.data[afKey].add(key, data);
     };
 
     this.reset();

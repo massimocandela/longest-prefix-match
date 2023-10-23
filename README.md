@@ -35,6 +35,6 @@ longestPrefixMatch.getMatch("213.74.5.0/28", true); // returns [{ match: "213.74
 
 longestPrefixMatch.getMatch("213.74.5.0/25", true); // returns [{ match: "213.74.5.0/24", something: false }]
 
-longestPrefixMatch.getLessSpecificMatch("213.74.5.0/28"); // returns [{match: ""213.74.5.0/24"}]
+// longestPrefixMatch.getLessSpecificMatch("213.74.5.0/28"); // returns [{match: ""213.74.5.0/24"}]
 
 ```

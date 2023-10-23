@@ -27,7 +27,6 @@ describe("Tests", function () {
 
     somePrefixes.forEach(prefix => longestPrefixMatch.addPrefix(prefix, { prefix }));
 
-
     it("match - v4", function(done) {
 
         const match1 = sortByPrefixLength(longestPrefixMatch.getMatch("143.0.0.0/21", false).map(i => i.prefix)).join("-");
