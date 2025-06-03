@@ -5,3 +5,5 @@ tests/
 .npmrc
 .env
 .git/
+~/
+.npm/
