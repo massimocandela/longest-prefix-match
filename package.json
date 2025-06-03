@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "release": "dotenv release-it",
-    "test": "./node_modules/.bin/mocha --exit tests"
+    "test": "mocha --exit tests"
   },
   "author": {
     "name": "Massimo Candela",
