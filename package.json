@@ -23,7 +23,7 @@
     "chai": "^4.3.10",
     "chai-subset": "^1.6.0",
     "dotenv-cli": "^7.3.0",
-    "mocha": "^10.2.0",
+    "mocha": "^11.6.0",
     "release-it": "^19.0.3"
   },
   "repository": {
