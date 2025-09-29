@@ -14,14 +14,14 @@ const LongestPrefixMatch = function (params={}) {
 
     this.getMatch = (prefix, all) => {
         const af = ip.getAddressFamily(prefix);
-        const binaryNetmask = ip.getNetmask(prefix, af);
+        const binaryNetmask = ip.applyNetmask(prefix, af);
 
         return this._getMatch(binaryNetmask, af, all).map(i => i.data);
     };
 
     this.getLessSpecificMatch = (prefix) => {
         const af = ip.getAddressFamily(prefix);
-        const binaryNetmask = ip.getNetmask(prefix, af);
+        const binaryNetmask = ip.applyNetmask(prefix, af);
 
         return this._getLessSpecificMatch(binaryNetmask, af).map(i => i.data);
     };
@@ -75,9 +75,8 @@ const LongestPrefixMatch = function (params={}) {
         }
 
         const afKey = `v${af}`;
-        const key = binaryPrefix;
 
-        this.data[afKey].add(key, data);
+        this.data[afKey].add(binaryPrefix, data);
     };
 
     this.reset();
