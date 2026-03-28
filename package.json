@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "release": "dotenv release-it",
-    "test": "mocha --exit tests"
+    "test": "node --expose-gc ./node_modules/mocha/bin/mocha --exit tests",
+    "test-memory": "node --expose-gc ./node_modules/mocha/bin/mocha --exit tests/2_memory_leak_test.js",
+    "test:memory": "npm run test-memory"
   },
   "author": {
     "name": "Massimo Candela",
