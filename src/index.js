@@ -60,9 +60,7 @@ LongestPrefixMatch.prototype.toArray = function () {
 LongestPrefixMatch.prototype._addPrefix = function (binaryPrefix, af, payload) {
     this.length++;
     const data = {
-        data: payload,
-        binaryPrefix,
-        length: binaryPrefix.length
+        data: payload
     }
 
     const afKey = `v${af}`;
