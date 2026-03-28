@@ -29,26 +29,13 @@ const LongestPrefixMatch = function (params={}) {
     this._getLessSpecificMatch = (binaryNetmask, af) => {
 
         const afKey = `v${af}`;
-        let key = binaryNetmask;
-
-        for (let n=1; n <= binaryNetmask.length; n++) {
-            key = binaryNetmask.slice(0, n);
-            const result = this.data[afKey].at(key);
-
-            if (result) {
-                return result;
-            }
-        }
-
-        return [];
+        return this.data[afKey].getLessSpecific(binaryNetmask);
     };
 
     this._getMatch = (binaryNetmask, af, all) => {
 
         const afKey = `v${af}`;
-        let key = binaryNetmask;
-
-        return this.data[afKey].get(key, all);
+        return this.data[afKey].get(binaryNetmask, all);
     };
 
     this.addPrefix = (prefix, payload) => {
