@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "release": "dotenv release-it",
-    "test": "node --expose-gc ./node_modules/mocha/bin/mocha --exit tests",
+    "test": "node ./node_modules/mocha/bin/mocha --exit tests/1_test.js && npm run test:memory",
     "test:memory": "node --expose-gc ./node_modules/mocha/bin/mocha --exit tests/2_memory_leak_test.js",
     "bench:reads": "node tests/3_reads_benchmark.js",
     "bench:reads:json": "node tests/3_reads_benchmark.js --json"
