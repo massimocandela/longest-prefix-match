@@ -11,6 +11,27 @@ const ListTrie = function () {
 
     this.root = this._newNode();
 
+    this._walk = (visitor) => {
+        const stack = [{ node: this.root, key: "" }];
+
+        while (stack.length > 0) {
+            const current = stack.pop();
+            const node = current.node;
+
+            if (node.values) {
+                visitor(current.key, node.values);
+            }
+
+            if (node.one) {
+                stack.push({ node: node.one, key: `${current.key}1` });
+            }
+
+            if (node.zero) {
+                stack.push({ node: node.zero, key: `${current.key}0` });
+            }
+        }
+    };
+
     this.reset = () => {
         this.index = {};
         this.root = this._newNode();
@@ -34,12 +55,17 @@ const ListTrie = function () {
         } else {
             node.values = [value];
         }
+    }
 
-        if (this.index[key]) {
-            this.index[key].push(value);
-        } else {
-            this.index[key] = [value];
-        }
+    this.rebuildIndex = () => {
+        const index = {};
+
+        this._walk((key, values) => {
+            index[key] = values;
+        });
+
+        this.index = index;
+        return this.index;
     }
 
     this.get = (key, all) => {
@@ -115,7 +141,13 @@ const ListTrie = function () {
     }
 
     this.values = () => {
-        return Object.values(this.index);
+        const allValues = [];
+
+        this._walk((key, values) => {
+            allValues.push(values);
+        });
+
+        return allValues;
     }
 }
 

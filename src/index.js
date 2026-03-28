@@ -46,6 +46,8 @@ const LongestPrefixMatch = function (params={}) {
     };
 
     this.getData = () => {
+        this.data.v4.rebuildIndex();
+        this.data.v6.rebuildIndex();
         return this.data;
     };
 
