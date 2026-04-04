@@ -20,7 +20,7 @@
     "registry": "https://registry.npmjs.com/"
   },
   "dependencies": {
-    "ip-sub": "^1.8.1"
+    "ip-sub": "^1.9.0"
   },
   "devDependencies": {
     "chai": "^6.2.2",
