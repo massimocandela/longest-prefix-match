@@ -1,7 +1,7 @@
 const ip = require("ip-sub");
-const ListTrie = require('./ListTrie');
+const ListTrie = require("./ListTrie");
 
-const LongestPrefixMatch = function (params={}) {
+const LongestPrefixMatch = function (params = {}) {
     this.length = 0;
     this.reset();
 };
@@ -57,11 +57,39 @@ LongestPrefixMatch.prototype.toArray = function () {
     return [...this.data.v4.values(), ...this.data.v6.values()].flat().map(i => i.data);
 };
 
+LongestPrefixMatch.prototype.getOnlyMoreSpecifics = function () {
+    const {v4, v6} = this.getData(); // also rebuilds the indexes
+
+    const getLeafPayloads = (trie) => {
+        const keys = Object.keys(trie.index);
+        const keySet = new Set(keys);
+
+        // Mark every key that is a proper prefix of another key as a "parent".
+        // One pass over all keys, checking every ancestor length — O(n × L).
+        const parentKeys = new Set();
+        for (const key of keys) {
+            for (let len = 1; len < key.length; len++) {
+                if (keySet.has(key.substring(0, len))) {
+                    parentKeys.add(key.substring(0, len));
+                }
+            }
+        }
+
+        // Keep only keys that were never identified as a parent (i.e. the leaves).
+        return keys
+            .filter(key => !parentKeys.has(key))
+            .flatMap(key => trie.index[key])
+            .map(item => item.data);
+    };
+
+    return [...getLeafPayloads(v4), ...getLeafPayloads(v6)];
+};
+
 LongestPrefixMatch.prototype._addPrefix = function (binaryPrefix, af, payload) {
     this.length++;
     const data = {
         data: payload
-    }
+    };
 
     const afKey = `v${af}`;
 
